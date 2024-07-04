@@ -1,37 +1,4 @@
 return {
-	-- {
-	-- 	"hrsh7th/nvim-cmp",
-	-- 	event = "InsertEnter",
-	-- 	config = function()
-	-- 		local cmp = require("cmp")
-	-- 		cmp.setup({
-	-- 			completion = {
-	-- 				autocomplete = false, -- Отключить автоматическое автодополнение
-	-- 			},
-	-- 			mapping = {
-	-- 				["<C-Space>"] = cmp.mapping.complete(), -- Вызов автодополнения по Ctrl+Space
-	-- 				["<CR>"] = cmp.mapping.confirm({ select = true }), -- Подтверждение выбора
-	-- 				["<Tab>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
-	-- 				["<S-Tab>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
-	-- 			},
-	-- 			sources = cmp.config.sources({
-	-- 				{ name = "nvim_lsp" },
-	-- 				{ name = "luasnip" },
-	-- 			}, {
-	-- 				{ name = "buffer" },
-	-- 			}),
-	-- 		})
-	-- 	end,
-	-- 	dependencies = {
-	-- 		"hrsh7th/cmp-nvim-lsp",
-	-- 		"hrsh7th/cmp-buffer",
-	-- 		"hrsh7th/cmp-path",
-	-- 		"hrsh7th/cmp-cmdline",
-	-- 		"L3MON4D3/LuaSnip",
-	-- 		"saadparwaiz1/cmp_luasnip",
-	-- 		"rafamadriz/friendly-snippets",
-	-- 	},
-	-- },
 	{
 		"stevearc/conform.nvim",
 		event = "BufWritePre",
