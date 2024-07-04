@@ -7,6 +7,7 @@ local options = {
     typescript = { "prettier" },
     typescriptreact = { "prettier" },
     javascriptreact = { "prettier" },
+    python = { "black" }, -- დაამატეთ Python-ის ფორმატერი
   },
 
   format_on_save = {
@@ -17,3 +18,4 @@ local options = {
 }
 
 require("conform").setup(options)
+
