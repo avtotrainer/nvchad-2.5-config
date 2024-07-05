@@ -9,6 +9,16 @@ STATE_DIR="$HOME/.local/state/nvim"
 # Backup directory
 BACKUP_DIR="$HOME/nvim_backup"
 
+# Function to delete a backup
+delete_backup() {
+  if [ -d "$BACKUP_DIR" ]; then
+    rm -rf "$BACKUP_DIR"
+    echo "Backup deleted."
+  else
+    echo "No backup found."
+  fi
+}
+
 # Function to create a backup
 create_backup() {
     echo "Creating backup..."
@@ -22,18 +32,27 @@ create_backup() {
 
 # Check if the -b parameter is provided
 BACKUP=false
+DELETE_BACKUP=false
 while getopts "b" option; do
     case $option in
         b)
             BACKUP=true
             ;;
+        d) # Delete backup (if provided)
+            DELETE_BACKUP=true
+            ;;
         *)
-            echo "Usage: $0 [-b]"
+            echo "Usage: $0 [-b] or $0 [-d]"
             exit 1
             ;;
     esac
 done
 
+# Delete backup if the -d option is provided
+if [ "$DELETE_BACKUP" = true ]; then
+    delete_backup
+    exit 0
+fi
 # Create backup if the -b option is provided
 if [ "$BACKUP" = true ]; then
     create_backup
