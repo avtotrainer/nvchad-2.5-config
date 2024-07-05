@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# NVim configuration directories
+CONFIG_DIR="$HOME/.config/nvim"
+CACHE_DIR="$HOME/.cache/nvim"
+DATA_DIR="$HOME/.local/share/nvim"
+STATE_DIR="$HOME/.local/state/nvim"
+
+# Backup directory
+BACKUP_DIR="$HOME/nvim_backup"
+
+# Function to create a backup
+create_backup() {
+    echo "Creating backup..."
+    mkdir -p "$BACKUP_DIR"
+    cp -r "$CONFIG_DIR" "$BACKUP_DIR" 2>/dev/null
+    cp -r "$CACHE_DIR" "$BACKUP_DIR" 2>/dev/null
+    cp -r "$DATA_DIR" "$BACKUP_DIR" 2>/dev/null
+    cp -r "$STATE_DIR" "$BACKUP_DIR" 2>/dev/null
+    echo "Backup completed. Backup is located at $BACKUP_DIR."
+}
+
+# Check if the -b parameter is provided
+BACKUP=false
+while getopts "b" option; do
+    case $option in
+        b)
+            BACKUP=true
+            ;;
+        *)
+            echo "Usage: $0 [-b]"
+            exit 1
+            ;;
+    esac
+done
+
+# Create backup if the -b option is provided
+if [ "$BACKUP" = true ]; then
+    create_backup
+fi
+
+# Remove the configuration directories
+rm -rf "$CONFIG_DIR" "$CACHE_DIR" "$DATA_DIR" "$STATE_DIR"
+
+echo "NVim configuration has been removed."
+
