@@ -29,6 +29,13 @@ return {
 			require("configs.lspconfig")
 		end,
 	},
+	{
+		"nvimtools/none-ls.nvim",
+		ft = { "python" },
+		opts = function()
+			return require("configs.null-ls")
+		end,
+	},
 	{ "nvim-neotest/nvim-nio" },
 	{
 		"williamboman/mason.nvim",
@@ -43,7 +50,11 @@ return {
 				"gopls",
 				"js-debug-adapter",
 				"typescript-language-server",
-				"pyrigth",
+				"black",
+				"debugpy",
+				"mypy",
+				"ruff-lsp",
+				"pyright",
 			},
 		},
 	},
