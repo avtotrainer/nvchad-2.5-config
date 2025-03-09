@@ -53,7 +53,7 @@ return {
 				"black",
 				"debugpy",
 				"mypy",
-				"ruff-lsp",
+				"ruff",
 				"pyright",
 			},
 		},
