@@ -10,3 +10,5 @@ map("n", "<leader>mu", function()
 end, { desc = "🛠️ NvChad Maintenance Menu" })
 
 -- Add more personal mappings here
+-- Terminal
+map("t", "<Esc>", "<C-\\><C-n>", { desc = "Escape Terminal Mode" })
