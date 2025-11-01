@@ -1,3 +1,5 @@
+-- vim.opt.rtp:append("~/.config/nvim/lua/custom-neotest-jest/lua")
+-- vim.opt.runtimepath:append("~/.config/nvim/lua/custom-neotest-jest/lua")
 return {
 	{
 		"stevearc/conform.nvim",
@@ -6,6 +8,7 @@ return {
 			require("configs.conform")
 		end,
 	},
+
 	{
 		"christoomey/vim-tmux-navigator",
 		lazy = false,
@@ -17,18 +20,13 @@ return {
 			"TmuxNavigatePrevious",
 		},
 	},
+
 	{
 		"stevearc/dressing.nvim",
 		lazy = false,
 		opts = {},
 	},
-	{
-		"neovim/nvim-lspconfig",
-		config = function()
-			require("nvchad.configs.lspconfig").defaults()
-			require("configs.lspconfig")
-		end,
-	},
+
 	{
 		"nvimtools/none-ls.nvim",
 		ft = { "python" },
@@ -36,7 +34,9 @@ return {
 			return require("configs.null-ls")
 		end,
 	},
+
 	{ "nvim-neotest/nvim-nio" },
+
 	{
 		"williamboman/mason.nvim",
 		opts = {
@@ -77,6 +77,7 @@ return {
 			},
 		},
 	},
+
 	{
 		"mfussenegger/nvim-lint",
 		event = "VeryLazy",
@@ -84,12 +85,14 @@ return {
 			require("configs.lint")
 		end,
 	},
+
 	{
 		"neovim/nvim-lspconfig",
 		config = function()
 			require("configs.lspconfig")
 		end,
 	},
+
 	{
 		"windwp/nvim-ts-autotag",
 		event = "VeryLazy",
@@ -97,6 +100,7 @@ return {
 			require("nvim-ts-autotag").setup()
 		end,
 	},
+
 	{
 		"max397574/better-escape.nvim",
 		event = "InsertEnter",
@@ -104,18 +108,7 @@ return {
 			require("better_escape").setup()
 		end,
 	},
-	-- {
-	--   "jackMort/ChatGPT.nvim",
-	--   event = "VeryLazy",
-	--   config = function()
-	--     require("chatgpt").setup {}
-	--   end,
-	--   dependencies = {
-	--     "MunifTanjim/nui.nvim",
-	--     "nvim-lua/plenary.nvim",
-	--     "nvim-telescope/telescope.nvim",
-	--   },
-	-- },
+
 	{
 		"nvim-neotest/neotest",
 		event = "VeryLazy",
@@ -126,7 +119,7 @@ return {
 						jestCommand = "npm test --",
 						jestConfigFile = "jest.config.ts",
 						env = { CI = true },
-						cwd = function(path)
+						cwd = function()
 							return vim.fn.getcwd()
 						end,
 					}),
@@ -137,7 +130,7 @@ return {
 			"nvim-lua/plenary.nvim",
 			"nvim-treesitter/nvim-treesitter",
 			"antoinemadec/FixCursorHold.nvim",
-			"haydenmeade/neotest-jest",
+			{ dir = vim.fn.stdpath("config") .. "/lua/custom-neotest-jest", name = "neotest-jest" },
 		},
 	},
 	{
@@ -147,6 +140,7 @@ return {
 			if not ok then
 				return
 			end
+
 			dap.configurations.typescript = {
 				{
 					type = "node2",
@@ -158,6 +152,7 @@ return {
 					protocol = "inspector",
 				},
 			}
+
 			dap.adapters.node2 = {
 				type = "executable",
 				command = "node-debug2-adapter",
@@ -168,6 +163,7 @@ return {
 			"mxsdev/nvim-dap-vscode-js",
 		},
 	},
+
 	{
 		"rcarriga/nvim-dap-ui",
 		config = function()
@@ -189,19 +185,29 @@ return {
 			"mfussenegger/nvim-dap",
 		},
 	},
+
 	{
 		"folke/neodev.nvim",
 		config = function()
 			require("neodev").setup({
-				library = { plugins = { "nvim-dap-ui" }, types = true },
+				library = {
+					plugins = { "nvim-dap-ui" },
+					types = true,
+				},
 			})
 		end,
 	},
+
 	{ "tpope/vim-fugitive" },
-	{ "rbong/vim-flog", dependencies = {
-		"tpope/vim-fugitive",
-	}, lazy = false },
+
+	{
+		"rbong/vim-flog",
+		dependencies = { "tpope/vim-fugitive" },
+		lazy = false,
+	},
+
 	{ "sindrets/diffview.nvim", lazy = false },
+
 	{
 		"ggandor/leap.nvim",
 		lazy = false,
@@ -209,25 +215,29 @@ return {
 			require("leap").add_default_mappings(true)
 		end,
 	},
-	{
-		"kevinhwang91/nvim-bqf",
-		lazy = false,
-	},
+
+	{ "kevinhwang91/nvim-bqf", lazy = false },
+
 	{
 		"folke/trouble.nvim",
 		lazy = false,
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 	},
+
 	{
 		"folke/todo-comments.nvim",
-		dependencies = { "nvim-lua/plenary.nvim" },
 		lazy = false,
+		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
 			require("todo-comments").setup()
 		end,
-	}, -- To make a plugin not be loaded
+	},
+
 	{
 		"Exafunction/codeium.vim",
 		lazy = false,
 	},
+
+	-- 🔁 Optional fix loader for deprecated vim.tbl_flatten (place this import if needed)
+	-- { import = "plugins.neotest-jest-fix" },
 }
