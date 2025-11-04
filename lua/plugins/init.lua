@@ -212,7 +212,12 @@ return {
 		"ggandor/leap.nvim",
 		lazy = false,
 		config = function()
-			require("leap").add_default_mappings(true)
+			local leap = require("leap")
+			leap.opts.safe_labels = "sfnut/"
+			leap.opts.labels = "sfnut/SFNLHMUGTZ?"
+			leap.add_default_mappings() -- ❌ depricated, ამიტომ:
+			vim.keymap.set({ "n", "x", "o" }, "s", "<Plug>(leap-forward)")
+			vim.keymap.set({ "n", "x", "o" }, "S", "<Plug>(leap-backward)")
 		end,
 	},
 
