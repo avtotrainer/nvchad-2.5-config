@@ -1,14 +1,24 @@
 -- ~/.config/nvim/lua/configs/lspconfig.lua
--- Neovim 0.11+: vim.lsp.config / vim.lsp.enable
--- Fallback: require("lspconfig")[server].setup(...) ძველი გარემოებისთვის
+-- Neovim 0.11+ native LSP config
+-- NVChad-compatible, NixOS-friendly
 
 local nv = require("nvchad.configs.lspconfig")
+
+-- ─────────────────────────────────────────────────────────────
+-- Capabilities
+-- UTF-8 position encoding აუცილებელია pyright + ruff ერთად
+-- ─────────────────────────────────────────────────────────────
+local capabilities = vim.tbl_deep_extend("force", nv.capabilities, {
+	general = {
+		positionEncodings = { "utf-8" },
+	},
+})
 
 local function merged(opts)
 	return vim.tbl_deep_extend("force", {
 		on_attach = nv.on_attach,
 		on_init = nv.on_init,
-		capabilities = nv.capabilities,
+		capabilities = capabilities,
 	}, opts or {})
 end
 
@@ -16,11 +26,11 @@ local function setup(server, opts)
 	opts = merged(opts)
 
 	if vim.lsp and vim.lsp.config and vim.lsp.enable then
-		-- ✅ ახალი გზა (0.11+)
+		-- Neovim 0.11+
 		vim.lsp.config(server, opts)
 		vim.lsp.enable(server)
 	else
-		-- ✅ fallback ძველ nvim-ზე
+		-- Fallback (ძველი nvim-ისთვის)
 		local ok, lspconfig = pcall(require, "lspconfig")
 		if ok and lspconfig[server] and lspconfig[server].setup then
 			lspconfig[server].setup(opts)
@@ -30,32 +40,77 @@ local function setup(server, opts)
 	end
 end
 
--- ── TypeScript: Organize Imports user command
-local function organize_imports()
-	local params = {
+-- ─────────────────────────────────────────────────────────────
+-- TypeScript helper
+-- ─────────────────────────────────────────────────────────────
+vim.api.nvim_create_user_command("OrganizeImports", function()
+	vim.lsp.buf.execute_command({
 		command = "_typescript.organizeImports",
 		arguments = { vim.api.nvim_buf_get_name(0) },
-	}
-	vim.lsp.buf.execute_command(params)
-end
+	})
+end, { desc = "Organize TS/TSX Imports" })
 
-vim.api.nvim_create_user_command("OrganizeImports", organize_imports, { desc = "Organize TS/TSX Imports" })
-
--- ── საერთო სერვერები (შენი ძველი სიის მიხედვით)
+-- ─────────────────────────────────────────────────────────────
+-- Server list (მხოლოდ რეალურად საჭიროები)
+-- ─────────────────────────────────────────────────────────────
 local servers = {
-	"html", -- html-lsp (vscode-langservers-extracted)
-	"cssls", -- css-lsp
-	"ts_ls", -- typescript-language-server (ახალი სახელი lspconfig-ში)
-	"clangd",
-	"gopls",
-	"gradle_ls",
 	"pyright",
 	"ruff",
-	"prismals",
+
+	-- Web (იშვიათი გამოყენება)
+	"ts_ls",
+	"html",
+	"cssls",
+
+	-- სხვა (დატოვებულია, მაგრამ არ აზიანებს)
+	"clangd",
+	"gopls",
 }
 
--- სპეც-პარამეტრები კონკრეტული სერვერებისთვის
+-- ─────────────────────────────────────────────────────────────
+-- Per-server configuration
+-- ─────────────────────────────────────────────────────────────
 local per_server = {
+	-- 🐍 Pyright: types, definition, hover
+	pyright = {
+		filetypes = { "python" },
+		settings = {
+			python = {
+				analysis = {
+					autoSearchPaths = true,
+					diagnosticMode = "openFilesOnly",
+					useLibraryCodeForTypes = true,
+					typeCheckingMode = "basic",
+				},
+			},
+		},
+	},
+
+	-- 🐍 Ruff: diagnostics + code actions
+	-- hover / formatting გამორთულია, რომ pyright-ს არ შეეჯახოს
+	ruff = {
+		filetypes = { "python" },
+		on_attach = function(client, bufnr)
+			client.server_capabilities.hoverProvider = false
+			client.server_capabilities.documentFormattingProvider = false
+			nv.on_attach(client, bufnr)
+		end,
+	},
+
+	-- 🌐 TypeScript
+	ts_ls = {
+		filetypes = {
+			"javascript",
+			"javascriptreact",
+			"typescript",
+			"typescriptreact",
+		},
+	},
+
+	html = { filetypes = { "html" } },
+	cssls = { filetypes = { "css", "scss", "sass" } },
+
+	-- 🐹 Go (თუ გახსნი ფაილს, იმუშავებს)
 	gopls = {
 		settings = {
 			gopls = {
@@ -71,20 +126,19 @@ for _, name in ipairs(servers) do
 	setup(name, per_server[name])
 end
 
--- ── Emmet Language Server
+-- ─────────────────────────────────────────────────────────────
+-- Emmet (HTML / JSX / TSX)
+-- ─────────────────────────────────────────────────────────────
 setup("emmet_language_server", {
 	filetypes = {
 		"html",
 		"css",
 		"scss",
 		"sass",
-		"javascript",
-		"typescript",
 		"javascriptreact",
 		"typescriptreact",
 		"jsx",
 		"tsx",
-		"astro",
 		"vue",
 		"svelte",
 		"xml",

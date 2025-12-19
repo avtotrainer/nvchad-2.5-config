@@ -27,35 +27,12 @@ return {
 		opts = {},
 	},
 
-	{
-		"nvimtools/none-ls.nvim",
-		ft = { "python" },
-		opts = function()
-			return require("configs.null-ls")
-		end,
-	},
-
 	{ "nvim-neotest/nvim-nio" },
 
 	{
 		"williamboman/mason.nvim",
 		opts = {
-			ensure_installed = {
-				"lua-language-server",
-				"stylua",
-				"html-lsp",
-				"css-lsp",
-				"prettier",
-				"eslint-lsp",
-				"gopls",
-				"js-debug-adapter",
-				"typescript-language-server",
-				"black",
-				"debugpy",
-				"mypy",
-				"ruff",
-				"pyright",
-			},
+			ensure_installed = {},
 		},
 	},
 
