@@ -125,27 +125,3 @@ local per_server = {
 for _, name in ipairs(servers) do
 	setup(name, per_server[name])
 end
-
--- ─────────────────────────────────────────────────────────────
--- Emmet (HTML / JSX / TSX)
--- ─────────────────────────────────────────────────────────────
-setup("emmet_language_server", {
-	filetypes = {
-		"html",
-		"css",
-		"scss",
-		"sass",
-		"javascriptreact",
-		"typescriptreact",
-		"jsx",
-		"tsx",
-		"vue",
-		"svelte",
-		"xml",
-	},
-	init_options = {
-		showAbbreviationSuggestions = true,
-		showExpandedAbbreviation = "always",
-		showSuggestionsAsSnippets = false,
-	},
-})
