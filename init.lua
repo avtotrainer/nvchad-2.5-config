@@ -9,7 +9,6 @@ pcall(function()
 		package.cpath = package.cpath .. ";" .. rocks_cpath
 	end
 end)
-
 vim.g.base46_cache = vim.fn.stdpath("data") .. "/nvchad/base46/"
 vim.g.mapleader = " "
 
@@ -44,7 +43,6 @@ dofile(vim.g.base46_cache .. "defaults")
 dofile(vim.g.base46_cache .. "statusline")
 
 require("nvchad.autocmds")
-require("configs.cmpconfig")
 vim.schedule(function()
 	require("mappings")
 end)

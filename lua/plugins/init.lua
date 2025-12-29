@@ -215,11 +215,6 @@ return {
 		end,
 	},
 
-	{
-		"Exafunction/codeium.vim",
-		lazy = false,
-	},
-
 	-- 🔁 Optional fix loader for deprecated vim.tbl_flatten (place this import if needed)
 	-- { import = "plugins.neotest-jest-fix" },
 }
