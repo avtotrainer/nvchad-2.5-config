@@ -80,6 +80,10 @@ local per_server = {
 					autoSearchPaths = true,
 					diagnosticMode = "openFilesOnly",
 					useLibraryCodeForTypes = true,
+					-- ეს ჩავამატე, როცა ცხად იმპორტზე უაზროდ აყვირდა
+					reportMissingImports = false,
+					reportMissingModuleSource = false,
+					--
 					typeCheckingMode = "basic",
 				},
 			},
