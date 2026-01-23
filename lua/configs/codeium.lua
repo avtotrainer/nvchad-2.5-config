@@ -1,34 +1,33 @@
--- lua/configs/codeium.lua
--- Nix-friendly Codeium/Windsurf setup:
---  - store API key/config under stdpath("state") (writable)
---  - store downloaded server under stdpath("state") (writable)
---  - optional wrapper for NixOS (steam-run) if the server needs FHS libs
-
+-- ~/.config/nvim/lua/configs/codeium.lua
 local M = {}
 
-function M.setup()
-	local state = vim.fn.stdpath("state")
-	local dir = state .. "/codeium"
-	local bin = dir .. "/bin"
-	local cfg = dir .. "/config.json"
+M.setup = function()
+  require("codeium").setup({
+    -- NixOS-თვის wrapper (თუ steam-run PATH-შია)
+    wrapper = vim.fn.exepath("steam-run") ~= "" and "steam-run" or nil,
 
-	-- Ensure directories exist (works even if already there)
-	vim.fn.mkdir(bin, "p")
+    -- cmp source default-ად true-ა, მაგრამ აქაც შეიძლება დაფიქსირება
+    enable_cmp_source = true,
 
-	require("codeium").setup({
-		-- The file that stores your API token
-		config_path = cfg,
+    -- სურვილისამებრ inline (virtual text) მინიშნებები
+    virtual_text = {
+      enabled = true,
+      manual = false,
+      map_keys = true,
 
-		-- Where the Windsurf/Codeium server binary will be downloaded
-		bin_path = bin,
-
-		-- Keep cmp source enabled (default true, but explicit is safer)
-		enable_cmp_source = true,
-
-		-- NixOS helper: run downloaded binaries in an FHS-like env
-		-- Comment this out if you don't need it.
-		wrapper = "steam-run",
-	})
+      -- Tab-ის ნაცვლად სხვა accept ღილაკი (კონფლიქტის თავიდან ასარიდებლად)
+      key_bindings = {
+        accept = "<C-g>",
+        next = "<M-]>",
+        prev = "<M-[>",
+      },
+    },
+  })
 end
 
-return M
+return setmetatable({}, {
+  __call = function()
+    M.setup()
+  end,
+})
+
