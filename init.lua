@@ -9,6 +9,7 @@ pcall(function()
 		package.cpath = package.cpath .. ";" .. rocks_cpath
 	end
 end)
+
 vim.g.base46_cache = vim.fn.stdpath("data") .. "/nvchad/base46/"
 vim.g.mapleader = " "
 
@@ -22,6 +23,11 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 local lazy_config = require("configs.lazy")
+
+-- IMPORTANT (Nix + read-only ~/.config/nvim):
+-- lockfile უნდა იყოს writable ადგილზე, თორემ Lazy sync/update დაიჭედება.
+lazy_config.lockfile = vim.fn.stdpath("state") .. "/lazy-lock.json"
+lazy_config.lockfile = vim.fs.normalize(lazy_config.lockfile)
 
 -- load plugins
 require("lazy").setup({
