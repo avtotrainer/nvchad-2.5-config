@@ -1,38 +1,33 @@
 -- lua/configs/codeium.lua
--- Codeium/Windsurf configuration (Nix-friendly paths)
+-- Nix-friendly Codeium/Windsurf setup:
+--  - store API key/config under stdpath("state") (writable)
+--  - store downloaded server under stdpath("state") (writable)
+--  - optional wrapper for NixOS (steam-run) if the server needs FHS libs
 
 local M = {}
 
-M.setup = function()
-	local ok, codeium = pcall(require, "codeium")
-	if not ok then
-		return
-	end
-
+function M.setup()
 	local state = vim.fn.stdpath("state")
-	local data = vim.fn.stdpath("data")
+	local dir = state .. "/codeium"
+	local bin = dir .. "/bin"
+	local cfg = dir .. "/config.json"
 
-	-- NixOS-ზე ხშირად საჭიროა wrapper (FHS) downloaded server-ის გასაშვებად.
-	-- თუ გაქვს steam-run, გამოვიყენოთ ავტომატურად.
-	local steam_run = vim.fn.exepath("steam-run")
-	if steam_run == "" then
-		steam_run = nil
-	end
+	-- Ensure directories exist (works even if already there)
+	vim.fn.mkdir(bin, "p")
 
-	local is_wsl = (vim.env.WSL_DISTRO_NAME ~= nil)
+	require("codeium").setup({
+		-- The file that stores your API token
+		config_path = cfg,
 
-	codeium.setup({
-		-- Read-only ~/.config/nvim-ის გვერდის ავლა: token აქ შეინახება (წერადია)
-		config_path = state .. "/codeium.json",
+		-- Where the Windsurf/Codeium server binary will be downloaded
+		bin_path = bin,
 
-		-- Server download directory (writeable)
-		bin_path = data .. "/codeium",
+		-- Keep cmp source enabled (default true, but explicit is safer)
+		enable_cmp_source = true,
 
-		-- Wrapper — სასარგებლოა NixOS-ზე (თუ steam-run არსებობს)
-		wrapper = steam_run,
-
-		-- WSL-ზე chat-ს browser opener ხშირად უსარგებლოა; completion მაინც იმუშავებს.
-		enable_chat = not is_wsl,
+		-- NixOS helper: run downloaded binaries in an FHS-like env
+		-- Comment this out if you don't need it.
+		wrapper = "steam-run",
 	})
 end
 
