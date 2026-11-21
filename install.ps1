@@ -70,7 +70,9 @@ if (-not $SkipTools) {
 
     if (-not (Get-Command tree-sitter -ErrorAction SilentlyContinue)) {
         Write-Step 'npm: tree-sitter-cli'
-        npm install -g tree-sitter-cli | Out-Host
+        # npm.cmd, not npm: "npm" resolves to npm.ps1, which is blocked when the
+        # execution policy is Restricted (the default on a fresh Windows)
+        npm.cmd install -g tree-sitter-cli | Out-Host
         Update-SessionPath
     }
 } else {
