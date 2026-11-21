@@ -4,12 +4,42 @@
 
 არსებულ კონფიგურაციაში მე გავთიშე აუტოკომპლიტის ავტომატური გამოსვლა, მისი გამოძახება შესაძლებელია `Ctrl + Space ` კომბინაციით. 
 
-კონფიგურაციაში მუშაობს `Codeium` პლაგინი, რომლის ასამუშავებლად დაგჭირდებათ მარტივი [რეგისტრაცია](https://codeium.com/) საიტზე, ხოლო შემდეგ ბრძანება `Codeium Auth`. ეს ბძანება გადაგიყვანთ საიტზე და გაჩვენებთ ხეშკოდს, რომელიც უნდა დააკოპიროთ და ჩასვათ. პლაგინი უფასოდ შეგიცვლით GitHub Copilot-ს, ამ ჩანაწერის გაკეების მომენტში მას ორი მილიონი გამომწერი ჰყავს. [ოფიციალური რეპოზიტორი არის აქ](https://github.com/Exafunction/codeium.vim)
+## GitHub Copilot
 
-უმეტესობა ფაილების ტიპებისათვის პლაგინი ჩართულია, თუ ის არ მუშაობს რომელიმე ტიპის ფაილთან, მაგალითად bash ან md, კონკრეტული ფაილისათვის შესაძლებელია `:CodeiumEnable` ბრძანების გამოყენება და `AI` ამუშავდება ამ ფაილშიც.
+AI ავტოდასრულებისთვის გამოიყენება [copilot.lua](https://github.com/zbirenbaum/copilot.lua) (`lua/plugins/copilot.lua`). საკმარისია უფასო [Copilot Free](https://github.com/features/copilot/plans) (2000 შევსება თვეში). პირველ გაშვებაზე: `:Copilot auth`.
+
+შეთავაზება ავტომატურად არ ჩნდება (Copilot Free-ის ქვოტაში ყველა ნაჩვენები შეთავაზება ითვლება) — გამოიძახე `Alt + ]`-ით.
+
+| კლავიში (insert) | მოქმედება |
+|---|---|
+| `Alt + ]` | შეთავაზების გამოძახება / შემდეგი შეთავაზება |
+| `Alt + [` | წინა შეთავაზება |
+| `Ctrl + g` | შეთავაზების მიღება |
+| `Alt + w` / `Alt + l` | მხოლოდ სიტყვის / ხაზის მიღება |
+| `Ctrl + ]` | უარყოფა |
+| `Alt + a` | ავტომატური შეთავაზებების ჩართვა/გამორთვა (მიმდინარე სესიაში) |
+
+NixOS-ზე ჩამოტვირთული binary არ ეშვება, ამიტომ დააყენე `pkgs.copilot-language-server` (კონფიგი თავად იპოვის PATH-ში) ან Node.js 22+ (nodejs რეჟიმი).
 
 
-## ᲘᲜᲡᲢᲐᲚᲐᲪᲘᲐ
+## ᲘᲜᲡᲢᲐᲚᲐᲪᲘᲐ — WINDOWS
+
+ერთი ბრძანება ჩვეულებრივ (არა-admin) PowerShell-ში — სუფთა Windows-ზეც:
+
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/avtotrainer/nvchad-2.5-config/main/install.ps1)))
+```
+
+`install.ps1` winget-ით აყენებს Neovim-ს, Git-ს, ripgrep-ს, fd-ს, MinGW gcc-ს, Node.js-ს, Python-ს და JetBrainsMono Nerd Font-ს, npm-ით `tree-sitter-cli`-ს, კლონავს კონფიგს `%LOCALAPPDATA%\nvim`-ში და headless რეჟიმში აყენებს plugin-ებს (`lazy-lock.json`-ის ვერსიებით), treesitter parser-ებს და Mason-ის LSP-ებს.
+პარამეტრები: `-WithGo` (Go + gopls), `-NoFont`, `-SkipTools` (მხოლოდ კონფიგი და plugin-ები).
+
+ხელით დარჩება: ახალი ტერმინალის გახსნა, Windows Terminal-ში ფონტის არჩევა (Settings → Profile → Appearance → Font face) და nvim-ში `:Copilot auth signin`.
+
+**განახლება:** იგივე ბრძანება ხელახლა — თუ კონფიგი უკვე ამ რეპოზიტორიის clone-ია, `git pull`-ს გააკეთებს. ან nvim-ში `<leader>mu` მენიუ / `update_chad.ps1`.
+
+Windows-ის დეტალები და რა განსხვავდება Linux-ისგან: [WINDOWS.md](WINDOWS.md).
+
+## ᲘᲜᲡᲢᲐᲚᲐᲪᲘᲐ — LINUX
 
 ### nvim-ის კონფიგის გასუფთავება
 

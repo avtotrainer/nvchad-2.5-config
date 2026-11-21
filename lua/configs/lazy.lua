@@ -2,6 +2,9 @@ return {
   defaults = { lazy = true },
   install = { colorscheme = { "nvchad" } },
 
+  -- არცერთ plugin-ს luarocks არ სჭირდება → :checkhealth-ის hererocks ERROR აღარ იქნება
+  rocks = { enabled = false },
+
   ui = {
     icons = {
       ft = "",

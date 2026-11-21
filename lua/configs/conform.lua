@@ -15,12 +15,21 @@ local options = {
 
 		-- Python: არ გაუშვა black თუ კოდი არ კომპილირდება
 		if filename:match("%.py$") then
-			local cmd = "python -m py_compile " .. vim.fn.shellescape(filename)
-			local result = vim.fn.system(cmd)
+			-- სიის ფორმა shell-ს გვერდს უვლის → Linux-ზეც და Windows-ზეც ერთნაირად მუშაობს
+			local python
+			for _, exe in ipairs({ "python", "python3", "py" }) do
+				if vim.fn.executable(exe) == 1 then
+					python = exe
+					break
+				end
+			end
 
-			if result ~= "" then
-				-- კოდი გატეხილია → არ ვფორმატავთ
-				return
+			if python then
+				vim.fn.system({ python, "-m", "py_compile", filename })
+				if vim.v.shell_error ~= 0 then
+					-- კოდი გატეხილია → არ ვფორმატავთ
+					return
+				end
 			end
 		end
 

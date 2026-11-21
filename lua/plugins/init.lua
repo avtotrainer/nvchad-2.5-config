@@ -31,13 +31,46 @@ return {
 
 	{
 		"williamboman/mason.nvim",
+		-- :MasonInstallAll-ის სია lua/chadrc.lua-შია (M.mason.pkgs)
 		opts = {
 			ensure_installed = {},
 		},
 	},
 
+	-- nvim-treesitter (main branch): ensure_installed / configs.setup აღარ არსებობს,
+	-- parser-ებს tree-sitter CLI + C compiler აწყობს, highlight ხელით ირთვება.
 	{
 		"nvim-treesitter/nvim-treesitter",
+		branch = "main",
+		build = ":TSUpdate", -- NvChad-ის ":TSUpdate | TSInstallAll" main-ზე არ არსებობს
+		config = function(_, opts)
+			pcall(function()
+				dofile(vim.g.base46_cache .. "syntax")
+				dofile(vim.g.base46_cache .. "treesitter")
+			end)
+
+			-- Windows: tree-sitter ნაგულისხმევად cl.exe-ს ეძებს; MinGW gcc-ით მუშაობს
+			if vim.fn.has("win32") == 1 and not vim.env.CC and vim.fn.executable("gcc") == 1 then
+				vim.env.CC = "gcc"
+			end
+
+			local ts = require("nvim-treesitter")
+			ts.setup()
+
+			if vim.fn.executable("tree-sitter") == 1 then
+				ts.install(opts.ensure_installed or {}) -- უკვე დაყენებულებს გამოტოვებს
+			else
+				vim.notify_once("tree-sitter CLI not found: parsers will not be installed", vim.log.levels.WARN)
+			end
+
+			vim.api.nvim_create_autocmd("FileType", {
+				callback = function(args)
+					if pcall(vim.treesitter.start, args.buf) then
+						vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+					end
+				end,
+			})
+		end,
 		opts = {
 			ensure_installed = {
 				"vim",
@@ -185,24 +218,14 @@ return {
 
 	{ "sindrets/diffview.nvim", lazy = false },
 
-	{
-		"ggandor/leap.nvim",
-		lazy = false,
-		config = function()
-			local leap = require("leap")
-			leap.opts.safe_labels = "sfnut/"
-			leap.opts.labels = "sfnut/SFNLHMUGTZ?"
-			leap.add_default_mappings() -- ❌ depricated, ამიტომ:
-			vim.keymap.set({ "n", "x", "o" }, "s", "<Plug>(leap-forward)")
-			vim.keymap.set({ "n", "x", "o" }, "S", "<Plug>(leap-backward)")
-		end,
-	},
+	-- leap.nvim: იხ. plugins/leap.lua
 
 	{ "kevinhwang91/nvim-bqf", lazy = false },
 
 	{
 		"folke/trouble.nvim",
 		lazy = false,
+		opts = {}, -- v3-ს setup() სჭირდება
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 	},
 
